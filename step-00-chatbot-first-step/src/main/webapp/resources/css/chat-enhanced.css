@@ -190,12 +190,13 @@
 }
 
 .message-bubble.bot {
-    background: white;
-    color: var(--text-color);
+    background: linear-gradient(135deg, #ffc06b, #ffe4a3);
+    color: #2a2a2a;
     align-self: flex-start;
     border-bottom-left-radius: 4px;
     margin-right: 20%;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(255, 192, 107, 0.2);
+    border: 1px solid rgba(255, 192, 107, 0.1);
 }
 
 .message-bubble.bot::before {
@@ -205,8 +206,23 @@
     left: -8px;
     width: 20px;
     height: 20px;
-    background: white;
+    background: linear-gradient(135deg, #ffc06b, #ffe4a3);
     clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+/* Adjust code block contrast for orange background */
+.message-bubble.bot .markdown-content code {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+}
+
+.message-bubble.bot .markdown-content a {
+    color: #1a1a1a;
+    text-decoration: underline;
+}
+
+.message-bubble.bot .markdown-content a:hover {
+    color: #000000;
 }
 
 /* Message Groups */
@@ -246,15 +262,131 @@
 .message-bubble.bot .markdown-content pre {
     background: #1e1e1e;
     color: #f8f8f2;
-    padding: 12px 16px;
+    padding: 36px 16px 12px;
     border-radius: 8px;
     overflow-x: auto;
     font-family: 'Fira Code', monospace;
     font-size: 13px;
-    line-height: 1.5;
-    margin: 8px 0;
+    line-height: 1.6;
+    margin: 12px 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.message-bubble.bot .markdown-content pre:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.message-bubble.bot .markdown-content pre code {
+    display: block;
+    padding-right: 25px; /* Space for copy button */
+}
+
+.message-bubble.bot .markdown-content pre::before {
+    content: 'Code';
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.message-bubble.bot .markdown-content pre:hover::before {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.message-bubble.bot .markdown-content pre.language-java::before {
+    content: 'Java';
+    color: #e67e22;
+    background: rgba(255, 192, 107, 0.2);
+    border: 1px solid rgba(255, 192, 107, 0.3);
+}
+
+.message-bubble.bot .markdown-content pre.language-xml::before {
+    content: 'XML';
+    color: #4CAF50;
+    background: rgba(76, 175, 80, 0.15);
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.message-bubble.bot .markdown-content pre.language-html::before {
+    content: 'HTML';
+    color: #E44D26;
+    background: rgba(228, 77, 38, 0.15);
+    border: 1px solid rgba(228, 77, 38, 0.2);
+}
+
+.message-bubble.bot .markdown-content pre.language-javascript::before {
+    content: 'JavaScript';
+    color: #F0DB4F;
+    background: rgba(240, 219, 79, 0.15);
+    border: 1px solid rgba(240, 219, 79, 0.2);
+}
+
+.message-bubble.bot .markdown-content pre.language-css::before {
+    content: 'CSS';
+    color: #264DE4;
+    background: rgba(38, 77, 228, 0.15);
+    border: 1px solid rgba(38, 77, 228, 0.2);
+}
+
+/* Copy Code Button */
+.copy-code-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.message-bubble.bot .markdown-content pre:hover .copy-code-button {
+    opacity: 1;
+}
+
+.copy-code-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.copy-code-button:active {
+    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.copy-code-button i {
+    font-size: 14px;
+    transition: transform 0.2s ease;
+}
+
+.copy-code-button:hover i {
+    transform: scale(1.1);
+}
+
+.copy-code-button .fa-check {
+    color: #4CAF50;
 }
 
 .message-bubble.bot .markdown-content code {
@@ -478,6 +610,52 @@
     }
 }
 
+/* Error Popup */
+.error-bubble {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #ff4757, #ff6b81);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+    z-index: 2000;
+    display: none;
+    animation: errorPopup 0.3s ease-out;
+    cursor: pointer;
+    font-weight: 500;
+    text-align: center;
+    min-width: 300px;
+    max-width: 80%;
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    font-size: 15px;
+    line-height: 1.4;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.error-bubble::before {
+    content: '⚠️';
+    margin-right: 8px;
+}
+
+.error-bubble:hover {
+    background: linear-gradient(135deg, #ff6b81, #ff4757);
+}
+
+@keyframes errorPopup {
+    from {
+        transform: translate(-50%, -100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
     :root {
@@ -493,6 +671,34 @@
     .chat-input {
         background-color: #2a2a2a;
         color: var(--text-color);
+    }
+
+    .chat-window {
+        background-color: #1e1e1e;
+    }
+
+    .message-bubble.bot {
+        background: linear-gradient(135deg, #f89b24, #ffa500);
+        color: #000000;
+    }
+
+    .message-bubble.bot::before {
+        background: linear-gradient(135deg, #f89b24, #ffa500);
+    }
+
+    .message-bubble.bot .markdown-content code {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: #000000;
+    }
+
+    .message-bubble.bot .markdown-content a {
+        color: #000000;
+        text-decoration: underline;
+    }
+
+    .message-bubble.bot .markdown-content pre {
+        background: #1a1a1a;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .markdown-content code {
