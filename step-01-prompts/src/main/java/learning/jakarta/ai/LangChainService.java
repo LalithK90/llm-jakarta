@@ -7,6 +7,7 @@ import dev.langchain4j.service.AiServices;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import learning.jakarta.ai.model.ModelType;
 import learning.jakarta.ai.prompts.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,17 +22,19 @@ public class LangChainService {
 
     @Getter
     private Personality personality = null;
+    @Getter
+    private PersonalityType personalityType;
     private OpenAiStreamingChatModel chatModel;
+    @Getter
+    private ModelType currentModel;
 
     @Inject
     LangChain4JConfig config;
 
-    @Inject
-    @PostConstruct
-    public void init() {
-        chatModel = OpenAiStreamingChatModel.builder()
+    private OpenAiStreamingChatModel createChatModel(String modelName) {
+        return OpenAiStreamingChatModel.builder()
                 .apiKey(config.getApiKey())
-                .modelName(config.getModelName())
+                .modelName(modelName)
                 .temperature(config.getTemperature())
                 .timeout(config.getTimeout())
                 .maxTokens(config.getMaxTokens())
@@ -39,13 +42,35 @@ public class LangChainService {
                 .logRequests(config.isLogRequests())
                 .logResponses(config.isLogResponses())
                 .build();
+    }
+
+    public void switchModel(ModelType modelType) {
+        chatModel = createChatModel(modelType.getModelName());
+        currentModel = modelType;
+        // Recreate personality with new model
+        if (personality != null) {
+            switchPersonality(config.getPersonalityType());
+        }
+    }
+
+    @Inject
+    @PostConstruct
+    public void init() {
+        currentModel = ModelType.fromModelName(config.getModelName());
+        chatModel = createChatModel(currentModel.getModelName());
 
         switchPersonality(config.getPersonalityType());
     }
 
     public void switchPersonality(PersonalityType personalityType) {
         log.info("Switching to personality type: {}", personalityType);
-        personality = switch (personalityType) {
+        this.personalityType = personalityType;
+        personality = getPersonality(personalityType);
+    }
+
+    private Personality getPersonality(PersonalityType personalityType) {
+        return switch (personalityType) {
+            case CASUAL_CHAT -> createPersonality(CasualChat.class, chatModel);
             case JAVA_CHAMPION -> createPersonality(JavaChampion.class, chatModel);
             case POET -> createPersonality(Poet.class, chatModel);
             case CHAIN_OF_THOUGHT -> createPersonality(ChainOfThought.class, chatModel);
@@ -62,7 +87,7 @@ public class LangChainService {
         log.info("User message: {}", message);
 
         personality.getUserText(message)
-                .onNext(consumer::accept)
+                .onNext(consumer)
                 .onComplete((Response<AiMessage> response) -> consumer.accept("[END]"))
                 .onError((Throwable throwable) -> {
                     log.error("Error processing message", throwable);
@@ -77,6 +102,7 @@ public class LangChainService {
             case ChainOfThought ignored -> ChainOfThought.SYSTEM_PROMPT;
             case MovieSummarizer ignored -> MovieSummarizer.SYSTEM_PROMPT;
             case TreeOfThought ignored -> TreeOfThought.SYSTEM_PROMPT;
+            case CasualChat ignored -> CasualChat.SYSTEM_PROMPT;
         };
     }
 }

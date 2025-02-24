@@ -237,3 +237,265 @@ function hideErrorBubble() {
     const errorBubble = document.getElementById("error-bubble");
     errorBubble.style.display = "none";
 }
+
+function toggleChat() {
+    const chatContainer = document.getElementById("chat-container");
+    const chatIcon = document.querySelector('.chat-icon');
+    const isOpening = chatContainer.style.display === "none";
+
+    if (isOpening) {
+        // Hide chat icon
+        chatIcon.style.display = "none";
+
+        // Show and animate container
+        chatContainer.style.display = "flex";
+        chatContainer.classList.add("animating");
+
+        // Remove animation class after animation completes
+        setTimeout(() => {
+            chatContainer.classList.remove("animating");
+        }, 300);
+
+        // Connect if needed
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
+            connect();
+        }
+
+        // Focus input
+        setTimeout(() => {
+            document.getElementById('message-input').focus();
+        }, 300);
+    } else {
+        // Start closing animation
+        chatContainer.classList.add("closing");
+
+        // Hide after animation
+        setTimeout(() => {
+            chatContainer.style.display = "none";
+            chatContainer.classList.remove("closing");
+        }, 300);
+
+        // Show chat icon with delay for smooth transition
+        setTimeout(() => {
+            chatIcon.style.display = "flex";
+            chatIcon.style.animation = "fadeIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
+            setTimeout(() => chatIcon.style.animation = "", 200);
+        }, 200);
+    }
+}
+
+function toggleFullScreen() {
+    const chatContainer = document.getElementById("chat-container");
+    const chatIcon = document.querySelector('.chat-icon');
+    const fullscreenButton = document.querySelector('.chat-fullscreen');
+
+    // Add transition class
+    chatContainer.classList.add('transitioning');
+
+    // Toggle fullscreen
+    chatContainer.classList.toggle("fullscreen");
+
+    if (chatContainer.classList.contains("fullscreen")) {
+        chatIcon.style.display = 'none';
+        fullscreenButton.title = "Exit fullscreen";
+
+        // Focus input when going fullscreen
+        setTimeout(() => {
+            document.getElementById('message-input').focus();
+        }, 300);
+    } else {
+        chatIcon.style.display = 'flex';
+        fullscreenButton.title = "Enter fullscreen";
+    }
+
+    // Handle layout changes
+    setTimeout(() => {
+        chatContainer.classList.remove('transitioning');
+        const chatWindow = document.getElementById('chat-window');
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }, 300);
+}
+
+function loadPersonalities() {
+    const personalitySelect = document.getElementById("personality-select");
+    const contextPath = getApplicationContext();
+
+    // Clear existing options
+    personalitySelect.innerHTML = '';
+
+    // Fetch available personalities
+    fetch(`${contextPath}/rest-api/personalities`)
+        .then(response => {
+            console.log('Personalities response:', response);
+            return response.json();
+        })
+        .then(personalities => {
+            console.log('Available personalities:', personalities);
+            if (Array.isArray(personalities)) {
+                personalities.forEach(personality => {
+                    console.log('Creating option for personality:', personality);
+                    const option = document.createElement('option');
+                    option.value = personality.name;
+                    option.textContent = personality.displayName;
+                    personalitySelect.appendChild(option);
+                });
+            } else {
+                console.error('Expected array of personalities but got:', personalities);
+            }
+
+            // Get and set current personality
+            return fetch(`${contextPath}/rest-api/personalities/current`);
+        })
+        .then(response => {
+            console.log('Current personality response:', response);
+            return response.json();
+        })
+        .then(currentPersonality => {
+            console.log('Current personality:', currentPersonality);
+            if (currentPersonality && currentPersonality.name) {
+                personalitySelect.value = currentPersonality.name;
+            } else {
+                console.error('Invalid current personality response:', currentPersonality);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading personalities:', error);
+        });
+}
+
+function loadModels() {
+    const modelSelect = document.getElementById("model-select");
+    const contextPath = getApplicationContext();
+
+    // Clear existing options
+    modelSelect.innerHTML = '';
+
+    // Fetch available models
+    fetch(`${contextPath}/rest-api/models`)
+        .then(response => {
+            console.log('Models response:', response);
+            return response.json();
+        })
+        .then(models => {
+            console.log('Available models:', models);
+            if (Array.isArray(models)) {
+                models.forEach(model => {
+                    console.log('Creating option for model:', model);
+                    const option = document.createElement('option');
+                    option.value = model.modelName;
+                    option.textContent = model.displayName;
+                    modelSelect.appendChild(option);
+                });
+            } else {
+                console.error('Expected array of models but got:', models);
+            }
+
+            // Get and set current model
+            return fetch(`${contextPath}/rest-api/models/current`);
+        })
+        .then(response => {
+            console.log('Current model response:', response);
+            return response.json();
+        })
+        .then(currentModel => {
+            console.log('Current model:', currentModel);
+            if (currentModel && currentModel.modelName) {
+                modelSelect.value = currentModel.modelName;
+            } else {
+                console.error('Invalid current model response:', currentModel);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading models:', error);
+        });
+}
+
+function switchModel(modelType) {
+    const contextPath = getApplicationContext();
+    const loadingIndicator = document.getElementById("loading-indicator");
+    loadingIndicator.style.display = "flex";
+
+    fetch(`${contextPath}/rest-api/models/switch/${modelType}`, {
+        method: 'POST'
+    })
+    .then(response => {
+        console.log('Switch model response:', response);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(model => {
+        console.log('Switched to model:', model);
+        if (model && model.displayName) {
+            addMessage(`Switched to ${model.displayName} model`, "bot");
+        } else {
+            console.error('Invalid model response:', model);
+            throw new Error('Invalid model response');
+        }
+    })
+    .catch(error => {
+        console.error('Error switching model:', error);
+        showErrorBubble("Failed to switch model. Please try again.");
+    })
+    .finally(() => {
+        loadingIndicator.style.display = "none";
+    });
+}
+
+function switchPersonality(personality) {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        const loadingIndicator = document.getElementById("loading-indicator");
+        loadingIndicator.style.display = "flex";
+
+        // Send personality switch command
+        socket.send(JSON.stringify({
+            type: "SWITCH_PERSONALITY",
+            personality: personality
+        }));
+
+        // Show switching message
+        const personalityName = personality.toLowerCase().replace(/_/g, " ");
+        addMessage("Switching to " + personalityName + " mode...", "bot");
+
+        // Hide loading after a short delay
+        setTimeout(() => {
+            loadingIndicator.style.display = "none";
+        }, 500);
+    } else {
+        showErrorBubble("Cannot switch personality: connection lost. Please refresh the page.");
+    }
+}
+
+function toggleSystemPrompt() {
+    const systemPrompt = document.getElementById("system-prompt");
+    const isVisible = systemPrompt.style.display === "block";
+
+    if (!isVisible) {
+        const personality = document.getElementById("personality-select").value;
+        const personalityName = personality.toLowerCase().replace(/_/g, " ");
+        const promptText = document.getElementById("system-prompt-text");
+
+        // Show loading state
+        promptText.textContent = "Loading system prompt...";
+        systemPrompt.style.display = "block";
+
+        // Fetch actual system prompt
+        const contextPath = getApplicationContext();
+        const fullPath = contextPath + "/rest-api/system-prompt";
+        fetch(fullPath)
+            .then(response => response.json())
+            .then(prompt => {
+                const { name, systemMessage } = prompt;
+                document.getElementById("current-mode").textContent = name;
+                document.getElementById("system-prompt-text").innerHTML = marked.parse(systemMessage);
+            })
+            .catch(error => {
+                console.error('Error fetching system prompt:', error);
+                promptText.innerHTML = marked.parse(`### Error\n\nFailed to load system prompt: ${error.message}`);
+            });
+    } else {
+        systemPrompt.style.display = "none";
+    }
+}
+

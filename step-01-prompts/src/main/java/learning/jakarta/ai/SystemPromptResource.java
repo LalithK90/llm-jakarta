@@ -18,6 +18,7 @@ public class SystemPromptResource {
     public Prompt getSystemPrompt() {
         Personality personality = langChainService.getPersonality();
         return switch (personality) {
+            case CasualChat ignored -> new Prompt("Casual Chat", CasualChat.SYSTEM_PROMPT);
             case JavaChampion ignored -> new Prompt("Java Champion", JavaChampion.SYSTEM_PROMPT);
             case Poet ignored -> new Prompt("Poet", Poet.SYSTEM_PROMPT);
             case ChainOfThought ignored -> new Prompt("Chain Of Thought", ChainOfThought.SYSTEM_PROMPT);

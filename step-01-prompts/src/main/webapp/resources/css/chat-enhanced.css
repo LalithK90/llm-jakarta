@@ -396,7 +396,7 @@
     box-shadow: none;
 }
 
-#personality-select {
+#personality-select, #model-select {
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
@@ -410,15 +410,15 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
-    min-width: 140px;
+    min-width: 120px;
 }
 
-#personality-select:hover {
+#personality-select:hover, #model-select:hover {
     background-color: rgba(255, 255, 255, 0.25);
     transform: translateY(-1px);
 }
 
-#personality-select:focus {
+#personality-select:focus, #model-select:focus {
     outline: none;
     background-color: rgba(255, 255, 255, 0.2);
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
