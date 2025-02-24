@@ -1,0 +1,28 @@
+package learning.jakarta.ai.model;
+
+import lombok.Getter;
+
+@Getter
+public enum ModelType {
+    GPT_4("gpt-4", "GPT-4"),
+    GPT_4_MINI("gpt-4o-mini", "GPT-4 Omni Mini"),
+    GPT_4O("gpt-4o", "GPT-4 Omni"),
+    GPT_3_5_TURBO("gpt-3.5-turbo", "GPT-3.5 Turbo");
+
+    private final String modelName;
+    private final String displayName;
+
+    ModelType(String modelName, String displayName) {
+        this.modelName = modelName;
+        this.displayName = displayName;
+    }
+
+    public static ModelType fromModelName(String modelName) {
+        for (ModelType type : values()) {
+            if (type.modelName.equals(modelName)) {
+                return type;
+            }
+        }
+        return GPT_3_5_TURBO; // default model
+    }
+}
