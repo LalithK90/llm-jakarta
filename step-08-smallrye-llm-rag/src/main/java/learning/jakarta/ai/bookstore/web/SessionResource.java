@@ -1,11 +1,14 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.web;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import learning.jakarta.ai.bookstore.service.CartSession;
+import learning.jakarta.ai.bookstore.service.CartSessionManager;
 
 @ApplicationScoped
 @Path("/session")

@@ -1,6 +1,7 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.repository;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import learning.jakarta.ai.bookstore.domain.Book;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class BookRepository implements Serializable {
             "9798868802935",
             "Helidon Revealed",
             "Michael P. Redlich",
-            "A Practical Guide to Oracle’s Microservices Framework",
+            "A Practical Guide to Oracle's Microservices Framework",
             59.99,
             20,
             "Jakarta EE",

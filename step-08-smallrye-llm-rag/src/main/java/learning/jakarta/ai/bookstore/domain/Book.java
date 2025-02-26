@@ -1,4 +1,4 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

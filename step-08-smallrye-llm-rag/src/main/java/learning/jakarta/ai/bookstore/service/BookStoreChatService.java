@@ -1,4 +1,4 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.service;
 
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.TokenStream;
@@ -45,5 +45,4 @@ public interface BookStoreChatService {
         """)
     @UserMessage("Answer the customer's {{question}}")
     String chat(@V("question") String question, @V("userId") String userId);
-
 }

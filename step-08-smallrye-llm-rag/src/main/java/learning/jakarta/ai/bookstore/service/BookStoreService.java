@@ -1,9 +1,13 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.service;
 
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import learning.jakarta.ai.bookstore.domain.Book;
+import learning.jakarta.ai.bookstore.domain.Cart;
+import learning.jakarta.ai.bookstore.domain.CartItem;
+import learning.jakarta.ai.bookstore.repository.BookRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
@@ -11,7 +15,6 @@ import java.util.*;
 
 @ApplicationScoped
 @Slf4j
-
 public class BookStoreService implements Serializable {
     @Inject
     private BookRepository bookRepository;
@@ -78,7 +81,7 @@ public class BookStoreService implements Serializable {
         int newStock = book.getStockQuantity() - quantity;
 
         bookRepository.updateStockQuantity(isbn, newStock);
-        return cartSessionManager.addToCart(cartSession.getCartId(), book, quantity);
+        return cartSessionManager.addToCart(userId, book, quantity);
     }
 
     @Tool("Remove book from shopping cart. Parameters: userId (string), isbn (string)")
@@ -99,7 +102,7 @@ public class BookStoreService implements Serializable {
                 .orElseThrow(() -> new IllegalArgumentException("Book not found with ISBN: " + isbn));
             int newStock = book.getStockQuantity() + removedQuantity;
             bookRepository.updateStockQuantity(isbn, newStock);
-            return cartSessionManager.removeFromCart(cartSession.getCartId(), book);
+            return cartSessionManager.removeFromCart(userId, book);
         } else {
             return "Book not found in cart";
         }

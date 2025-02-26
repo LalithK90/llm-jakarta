@@ -1,4 +1,4 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,17 +27,5 @@ public class Cart {
         total = items.stream()
                 .mapToDouble(item -> item.getBook().getPrice() * item.getQuantity())
                 .sum();
-    }
-}
-
-@Data
-@NoArgsConstructor
-class CartItem {
-    private Book book;
-    private int quantity;
-
-    public CartItem(Book book, int quantity) {
-        this.book = book;
-        this.quantity = quantity;
     }
 }

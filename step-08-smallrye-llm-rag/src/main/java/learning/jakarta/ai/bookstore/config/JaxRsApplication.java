@@ -1,4 +1,4 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.config;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;

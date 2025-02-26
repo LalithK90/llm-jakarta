@@ -1,9 +1,12 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.web;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import learning.jakarta.ai.bookstore.domain.Book;
+import learning.jakarta.ai.bookstore.service.BookStoreService;
+import learning.jakarta.ai.bookstore.service.CartSession;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,27 +16,34 @@ import java.util.List;
 @Named
 @SessionScoped
 public class BookStoreBean implements Serializable {
-    
+
     @Inject
     private BookStoreService bookStoreService;
-    
+
     @Getter
     private List<Book> books;
-    
+
     @Getter @Setter
     private String searchQuery;
-    
+
+    @Getter
+    private String userId;
+
     private CartSession currentCart;
 
     @PostConstruct
     public void init() {
         showAllBooks();
+        // Generate userId in the same format as JavaScript
+        long timestamp = System.currentTimeMillis();
+        String randomStr = Long.toString(Math.abs(java.util.UUID.randomUUID().getLeastSignificantBits()), 36).substring(0, 13);
+        userId = String.format("user-%d-%s", timestamp, randomStr);
     }
-    
+
     public void showAllBooks() {
         books = bookStoreService.getAllBooks();
     }
-    
+
     public void searchBooks() {
         if (searchQuery != null && !searchQuery.trim().isEmpty()) {
             books = bookStoreService.searchBooks(searchQuery);
@@ -41,36 +51,34 @@ public class BookStoreBean implements Serializable {
             showAllBooks();
         }
     }
-    
+
     public void filterByCategory(String category) {
         books = bookStoreService.searchByCategory(category);
     }
-    
+
     public void addToCart(String isbn) {
         if (currentCart == null) {
-            // Generate a simple session-based cart ID
-            String cartId = "cart-" + System.currentTimeMillis();
-            currentCart = bookStoreService.getOrCreateCart(cartId);
+            currentCart = bookStoreService.getOrCreateCart(userId);
         }
-        
+
         try {
-            bookStoreService.addToCart(currentCart.getCartId(), isbn, 1);
+            bookStoreService.addToCart(userId, isbn, 1);
         } catch (IllegalArgumentException e) {
             // Handle error (e.g., show message to user)
         }
     }
-    
+
     public int getCartItemCount() {
         return currentCart != null ? currentCart.getCart().getItems().size() : 0;
     }
-    
+
     public double getCartTotal() {
         return currentCart != null ? currentCart.getCart().getTotal() : 0.0;
     }
-    
+
     public void removeFromCart(String isbn) {
         if (currentCart != null) {
-            bookStoreService.removeFromCart(currentCart.getCartId(), isbn);
+            bookStoreService.removeFromCart(userId, isbn);
         }
     }
 }

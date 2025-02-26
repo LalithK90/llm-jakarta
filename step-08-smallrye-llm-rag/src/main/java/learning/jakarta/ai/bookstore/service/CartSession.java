@@ -1,5 +1,8 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.service;
 
+import learning.jakarta.ai.bookstore.domain.Book;
+import learning.jakarta.ai.bookstore.domain.Cart;
+import learning.jakarta.ai.bookstore.domain.CartItem;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

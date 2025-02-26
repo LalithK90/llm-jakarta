@@ -1,4 +1,4 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.service;
 
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
@@ -17,6 +17,7 @@ import dev.langchain4j.store.memory.chat.InMemoryChatMemoryStore;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
+import learning.jakarta.ai.bookstore.config.LangChain4JConfig;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

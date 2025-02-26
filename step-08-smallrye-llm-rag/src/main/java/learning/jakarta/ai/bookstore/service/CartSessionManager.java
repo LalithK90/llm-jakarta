@@ -1,7 +1,7 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import lombok.extern.java.Log;
+import learning.jakarta.ai.bookstore.domain.Book;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;

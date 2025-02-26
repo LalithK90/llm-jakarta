@@ -1,4 +1,4 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.chat;
 
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
@@ -17,6 +17,8 @@ import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
+import learning.jakarta.ai.bookstore.domain.Book;
+import learning.jakarta.ai.bookstore.service.BookStoreService;
 import lombok.extern.java.Log;
 
 import java.io.File;

@@ -1,9 +1,9 @@
-package learning.jakarta.ai;
+package learning.jakarta.ai.bookstore.web;
 
 import jakarta.inject.Inject;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
-import learning.jakarta.ai.bookstore.LangChainService;
+import learning.jakarta.ai.bookstore.service.LangChainService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

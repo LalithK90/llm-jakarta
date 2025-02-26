@@ -1,4 +1,4 @@
-package learning.jakarta.ai.bookstore;
+package learning.jakarta.ai.bookstore.config;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -29,9 +29,11 @@ public class LangChain4JConfig {
     @Inject
     @ConfigProperty(name = "langchain4j.open-ai.chat-model.max-tokens")
     private int maxTokens;
+
     @Inject
     @ConfigProperty(name = "langchain4j.open-ai.chat-model.frequency-penalty")
     private double frequencyPenalty;
+
     @Inject
     @ConfigProperty(name = "langchain4j.open-ai.chat-model.log-requests")
     private boolean logRequests;
@@ -44,4 +46,3 @@ public class LangChain4JConfig {
     @ConfigProperty(name = "langchain4j.open-ai.chat-model.max-memory-size")
     private int maxMemorySize;
 }
-
