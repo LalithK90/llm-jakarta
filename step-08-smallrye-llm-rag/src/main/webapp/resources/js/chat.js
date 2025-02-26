@@ -32,7 +32,14 @@ hljs.configure({
 });
 
 function getUserId() {
-    return localStorage.getItem("userId");
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'userId') {
+            return value;
+        }
+    }
+    return null;
 }
 
 function updateCartCount(cartCountElement) {
@@ -47,6 +54,34 @@ function updateCartCount(cartCountElement) {
             cartCountElement.textContent = data;
         })
         .catch(error => console.error("Error fetching cart count:", error));
+}
+
+
+function connectWebSocket() {
+
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const host = window.location.host;
+    const contextPath = getApplicationContext();
+    const path = `${contextPath}/bookUpdates`;
+    const wsUrl = `${protocol}//${host}${path}`;
+
+   let socketUpdate = new WebSocket(wsUrl);
+
+    socketUpdate.onmessage = function(event) {
+        console.log("Received message: ", event.data);
+        if (event.data === 'update') {
+            document.getElementById('refreshForm:refreshButton').click();
+        }
+    };
+
+    socketUpdate.onopen = function () {
+        console.log("Connected to Update WebSocket");
+    };
+
+    socketUpdate.onclose = function() {
+        // Reconnect after a delay if connection is lost
+        setTimeout(connectWebSocket, 1000);
+    };
 }
 
 

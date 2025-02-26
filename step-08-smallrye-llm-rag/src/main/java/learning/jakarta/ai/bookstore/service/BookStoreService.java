@@ -8,6 +8,7 @@ import learning.jakarta.ai.bookstore.domain.Book;
 import learning.jakarta.ai.bookstore.domain.Cart;
 import learning.jakarta.ai.bookstore.domain.CartItem;
 import learning.jakarta.ai.bookstore.repository.BookRepository;
+import learning.jakarta.ai.bookstore.web.BookUpdateWebSocket;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
@@ -21,6 +22,9 @@ public class BookStoreService implements Serializable {
 
     @Inject
     private CartSessionManager cartSessionManager;
+
+    @Inject
+    private BookUpdateWebSocket bookUpdateWebSocket;
 
     @Tool(name = "allBooks", value = "Get all available books")
     public List<Book> getAllBooks() {
@@ -81,6 +85,7 @@ public class BookStoreService implements Serializable {
         int newStock = book.getStockQuantity() - quantity;
 
         bookRepository.updateStockQuantity(isbn, newStock);
+        bookUpdateWebSocket.notifyBookUpdate();
         return cartSessionManager.addToCart(userId, book, quantity);
     }
 
