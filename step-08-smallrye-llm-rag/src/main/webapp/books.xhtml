@@ -18,6 +18,12 @@
         window.addEventListener("load", function() {
             localStorage.setItem("userId", "#{bookStoreBean.userId}");
         });
+
+        function handleCartUpdate(data) {
+            if (data.status === 'success') {
+                window.location.reload();
+            }
+        }
     </script>
 
 <!--    <script>-->
@@ -54,7 +60,7 @@
             </div>
             <div class="cart-info">
                 <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count">#{bookStoreBean.cartItemCount}</span>
+                <h:outputText id="cartCount" styleClass="cart-count" value="#{bookStoreBean.cartItemCount}"/>
             </div>
         </header>
 
@@ -85,28 +91,28 @@
                 </h:form>
             </aside>
 
-            <section id="bookList" class="book-grid">
+            <h:panelGroup id="bookList" layout="block" styleClass="book-grid">
                 <ui:repeat value="#{bookStoreBean.books}" var="book">
-                    <div class="book-card">
-                        <img src="#{request.contextPath}/resources/#{book.imageUrl}"
-                             alt="#{book.title}" 
-                             class="book-cover"/>
-                        <div class="book-info">
-                            <h3>#{book.title}</h3>
-                            <p class="author">by #{book.author}</p>
-                            <p class="price">$#{book.price}</p>
-                            <p class="stock">#{book.stockQuantity} in stock</p>
+                    <h:panelGroup layout="block" styleClass="book-card">
+                        <h:graphicImage value="/resources/#{book.imageUrl}"
+                                      alt="#{book.title}" 
+                                      styleClass="book-cover"/>
+                        <h:panelGroup layout="block" styleClass="book-info">
+                            <h:outputText value="#{book.title}" styleClass="h3"/>
+                            <h:outputText value="by #{book.author}" styleClass="author"/>
+                            <h:outputText value="$#{book.price}" styleClass="price"/>
+                            <h:outputText value="#{book.stockQuantity} in stock" styleClass="stock"/>
                             <h:form>
                                 <h:commandButton value="Add to Cart" 
                                                action="#{bookStoreBean.addToCart(book.isbn)}"
                                                styleClass="add-to-cart-btn">
-                                    <f:ajax execute="@form" render=":bookList :cart-count"/>
+                                    <f:ajax execute="@this" render="@form :bookList :cartCount"/>
                                 </h:commandButton>
                             </h:form>
-                        </div>
-                    </div>
+                        </h:panelGroup>
+                    </h:panelGroup>
                 </ui:repeat>
-            </section>
+            </h:panelGroup>
         </main>
     </div>
 

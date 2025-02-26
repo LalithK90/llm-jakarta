@@ -1,7 +1,7 @@
 package learning.jakarta.ai.bookstore.web;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import learning.jakarta.ai.bookstore.domain.Book;
@@ -12,9 +12,10 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ArrayList;
 
 @Named
-@SessionScoped
+@ViewScoped
 public class BookStoreBean implements Serializable {
 
     @Inject
@@ -33,11 +34,16 @@ public class BookStoreBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        showAllBooks();
         // Generate userId in the same format as JavaScript
         long timestamp = System.currentTimeMillis();
         String randomStr = Long.toString(Math.abs(java.util.UUID.randomUUID().getLeastSignificantBits()), 36).substring(0, 13);
         userId = String.format("user-%d-%s", timestamp, randomStr);
+
+        // Initialize cart
+        currentCart = bookStoreService.getOrCreateCart(userId);
+
+        // Load initial book list
+        showAllBooks();
     }
 
     public void showAllBooks() {
@@ -63,6 +69,7 @@ public class BookStoreBean implements Serializable {
 
         try {
             bookStoreService.addToCart(userId, isbn, 1);
+            books = bookStoreService.getAllBooks();
         } catch (IllegalArgumentException e) {
             // Handle error (e.g., show message to user)
         }

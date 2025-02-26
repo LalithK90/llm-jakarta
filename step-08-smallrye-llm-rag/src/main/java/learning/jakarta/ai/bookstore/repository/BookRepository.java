@@ -96,7 +96,19 @@ public class BookRepository implements Serializable {
     public void updateStockQuantity(String isbn, int newStock) {
         Book book = BOOKS.get(isbn);
         if (book != null) {
-            book.setStockQuantity(newStock);
+            // Create a new Book instance with updated stock
+            Book updatedBook = new Book(
+                book.getIsbn(),
+                book.getTitle(),
+                book.getAuthor(),
+                book.getDescription(),
+                book.getPrice(),
+                newStock,
+                book.getCategory(),
+                book.getImageUrl()
+            );
+            // Replace the old book with the updated one
+            BOOKS.put(isbn, updatedBook);
         }
     }
 }
