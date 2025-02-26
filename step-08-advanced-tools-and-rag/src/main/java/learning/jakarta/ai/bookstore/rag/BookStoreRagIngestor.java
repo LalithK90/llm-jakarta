@@ -1,4 +1,4 @@
-package learning.jakarta.ai.bookstore.chat;
+package learning.jakarta.ai.bookstore.rag;
 
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
@@ -13,8 +13,6 @@ import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Initialized;
-import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import learning.jakarta.ai.bookstore.domain.Book;
