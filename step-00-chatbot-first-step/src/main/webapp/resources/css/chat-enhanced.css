@@ -66,6 +66,8 @@
 
 /* Enhanced Chat Container */
 .chat-container {
+    display: flex;
+    flex-direction: column;
     width: 90%;
     height: 80vh;
     position: fixed;
@@ -123,6 +125,357 @@
 
 .loading-dots span:nth-child(3) {
     animation-delay: 0.4s;
+}
+
+/* Configuration Panel */
+.settings-button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color), #2a6ac0);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(27, 82, 160, 0.2);
+}
+
+.settings-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(27, 82, 160, 0.3);
+}
+
+.settings-button i {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.settings-button:hover i {
+    transform: rotate(180deg);
+}
+
+.main-page-content.with-config {
+    margin-right: 320px;
+    transition: margin-right 0.3s ease-in-out;
+}
+
+.settings-button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color), #2a6ac0);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(27, 82, 160, 0.2);
+}
+
+.settings-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(27, 82, 160, 0.3);
+}
+
+.settings-button i {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.settings-button:hover i {
+    transform: rotate(180deg);
+}
+
+.main-page-content {
+    transition: padding-left 0.3s ease-in-out;
+}
+
+.main-page-content.with-config {
+    padding-left: 320px;
+}
+
+.config-panel {
+    position: fixed;
+    top: 0;
+    left: -300px; /* Start off-screen */
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: white;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow-y: auto;
+    transition: left 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 2000; /* Above chat window */
+    opacity: 0;
+}
+
+.config-panel[style*="display: block"] {
+    left: 0;
+    opacity: 1;
+}
+
+/* Backdrop Overlay */
+.config-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    z-index: 1999; /* Between chat window and config panel */
+    pointer-events: none;
+}
+
+.config-backdrop.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+    .settings-button {
+        background: linear-gradient(135deg, #2a6ac0, var(--primary-color));
+        box-shadow: 0 2px 8px rgba(27, 82, 160, 0.4);
+    }
+
+    .settings-button:hover {
+        box-shadow: 0 4px 12px rgba(27, 82, 160, 0.6);
+    }
+
+    .config-panel {
+        background: #1a1a1a;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .config-header {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .config-header h3 {
+        color: #fff;
+    }
+
+    .config-close {
+        color: #aaa;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .config-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        transform: rotate(90deg);
+    }
+
+    .config-input {
+        background: #2a2a2a;
+        border-color: #444;
+        color: #fff;
+    }
+
+    .config-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(27, 82, 160, 0.2);
+        background: #333;
+    }
+
+    .config-input::placeholder {
+        color: #666;
+    }
+
+    .success-message {
+        background-color: #1e4620;
+        color: #98c99b;
+        border-color: #2a5a2d;
+    }
+
+    .success-message::after {
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    }
+
+    .config-backdrop {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(3px);
+    }
+}
+
+.config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    margin: -20px -20px 15px -20px;
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.config-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.config-close {
+    background: transparent;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.config-close i {
+    font-size: 16px;
+    transition: transform 0.3s ease;
+}
+
+.config-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.config-close:hover i {
+    transform: rotate(90deg);
+}
+
+.config-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.button-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-container .loading-indicator {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.button-container .loading-dots {
+    gap: 3px;
+}
+
+.button-container .loading-dots span {
+    width: 6px;
+    height: 6px;
+}
+
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.config-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.config-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(27, 82, 160, 0.1);
+    outline: none;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-group label {
+    margin: 0;
+}
+
+.success-message {
+    margin-top: 15px;
+    padding: 12px 20px;
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 4px;
+    text-align: center;
+    animation: slideInUp 0.3s ease-in-out;
+    border: 1px solid #c3e6cb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.success-message::before {
+    content: '✓';
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.success-message::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 1s infinite;
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* Chat Window */
@@ -803,7 +1156,8 @@
     align-items: center;
 }
 
-.chat-controls button {
+.chat-controls button,
+.chat-controls .chat-config {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     border-radius: 50%;
@@ -817,12 +1171,14 @@
     transition: all 0.3s ease;
 }
 
-.chat-controls button:hover {
+.chat-controls button:hover,
+.chat-controls .chat-config:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: scale(1.1);
 }
 
-.chat-controls button:active {
+.chat-controls button:active,
+.chat-controls .chat-config:active {
     transform: scale(0.95);
 }
 
