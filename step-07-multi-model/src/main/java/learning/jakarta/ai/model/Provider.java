@@ -4,7 +4,8 @@ public enum Provider {
     OPENAI("OpenAI"),
     ANTHROPIC("Anthropic"),
     GOOGLE("Google"),
-    MISTRAL("Mistral");
+    MISTRAL("Mistral"),
+    OLAMA("OLAMA");
 
     private final String displayName;
 

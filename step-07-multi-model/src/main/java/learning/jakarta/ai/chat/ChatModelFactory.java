@@ -8,12 +8,14 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import learning.jakarta.ai.config.*;
 import learning.jakarta.ai.model.ModelType;
-import learning.jakarta.ai.model.Provider;
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.Duration;
 
 @Slf4j
 @ApplicationScoped
 public class ChatModelFactory {
+
     @Inject
     private AIConfigFactory configFactory;
 
@@ -21,74 +23,115 @@ public class ChatModelFactory {
         AIProviderConfig config = configFactory.getConfig(modelType.getProvider());
 
         return switch (modelType.getProvider()) {
-            case OPENAI -> createOpenAIModel(modelType, (OpenAIConfig) config);
-            case ANTHROPIC -> createAnthropicModel(modelType, (AnthropicConfig) config);
-            case GOOGLE -> createGoogleModel(modelType, (GoogleConfig) config);
-            case MISTRAL -> createMistralModel(modelType, (MistralConfig) config);
+            case OPENAI -> {
+                OpenAIConfig openAiConfig = (OpenAIConfig) config;
+                yield buildOpenAiModel(
+                        openAiConfig.getApiKey(),
+                        null, // baseUrl is not used for native OpenAI
+                        modelType.getModelName(),
+                        openAiConfig.getTemperature(),
+                        openAiConfig.getTimeout(),
+                        openAiConfig.getMaxTokens(),
+                        openAiConfig.getFrequencyPenalty(),
+                        openAiConfig.isLogRequests(),
+                        openAiConfig.isLogResponses(),
+                        openAiConfig.getOrganizationId()
+                );
+            }
+            case GOOGLE -> {
+                GoogleConfig googleConfig = (GoogleConfig) config;
+                log.warn("Using OpenAI-compatible endpoint for Google. Native support coming soon.");
+                yield buildOpenAiModel(
+                        googleConfig.getApiKey(),
+                        googleConfig.getBaseUrl(),
+                        modelType.getModelName(),
+                        googleConfig.getTemperature(),
+                        googleConfig.getTimeout(),
+                        googleConfig.getMaxTokens(),
+                        null, // frequencyPenalty not supported by Google endpoint
+                        googleConfig.isLogRequests(),
+                        googleConfig.isLogResponses(),
+                        null // organizationId not applicable
+                );
+            }
+            case OLAMA -> {
+                OlamaConfig olamaConfig = (OlamaConfig) config;
+                yield buildOpenAiModel(
+                        olamaConfig.getApiKey(),
+                        olamaConfig.getBaseUrl(),
+                        modelType.getModelName(),
+                        olamaConfig.getTemperature(),
+                        olamaConfig.getTimeout(),
+                        olamaConfig.getMaxTokens(),
+                        olamaConfig.getFrequencyPenalty(),
+                        olamaConfig.isLogRequests(),
+                        olamaConfig.isLogResponses(),
+                        null
+                );
+            }
+            case ANTHROPIC -> {
+                AnthropicConfig anthropicConfig = (AnthropicConfig) config;
+                log.warn("Using OpenAI-compatible endpoint for Anthropic. ");
+                yield AnthropicStreamingChatModel.builder()
+                        .apiKey(anthropicConfig.getApiKey())
+                        .modelName(modelType.getModelName())
+                        .temperature(anthropicConfig.getTemperature())
+                        .timeout(anthropicConfig.getTimeout())
+                        .maxTokens(anthropicConfig.getMaxTokens())
+                        .logRequests(anthropicConfig.isLogRequests())
+                        .logResponses(anthropicConfig.isLogResponses())
+                        .build();
+            }
+            case MISTRAL -> {
+                MistralConfig mistralConfig = (MistralConfig) config;
+                log.warn("Using OpenAI-compatible endpoint for Mistral.");
+                yield MistralAiStreamingChatModel.builder()
+                        .apiKey(mistralConfig.getApiKey())
+                        .baseUrl(mistralConfig.getBaseUrl())
+                        .modelName(modelType.getModelName())
+                        .temperature(mistralConfig.getTemperature())
+                        .timeout(mistralConfig.getTimeout())
+                        .maxTokens(mistralConfig.getMaxTokens())
+                        .safePrompt(true)
+                        .logRequests(mistralConfig.isLogRequests())
+                        .logResponses(mistralConfig.isLogResponses())
+                        .build();
+            }
         };
     }
 
-    private StreamingChatLanguageModel createOpenAIModel(ModelType modelType, OpenAIConfig config) {
+    /**
+     * Helper method to build models using the OpenAI-compatible builder.
+     */
+    private StreamingChatLanguageModel buildOpenAiModel(String apiKey,
+                                                        String baseUrl,
+                                                        String modelName,
+                                                        double temperature,
+                                                        Duration timeout,
+                                                        int maxTokens,
+                                                        Double frequencyPenalty,
+                                                        boolean logRequests,
+                                                        boolean logResponses,
+                                                        String organizationId) {
+
         var builder = OpenAiStreamingChatModel.builder()
-                .apiKey(config.getApiKey())
-                .modelName(modelType.getModelName())
-                .temperature(config.getTemperature())
-                .timeout(config.getTimeout())
-                .maxTokens(config.getMaxTokens())
-                .frequencyPenalty(config.getFrequencyPenalty())
-                .logRequests(config.isLogRequests())
-                .logResponses(config.isLogResponses());
+                .apiKey(apiKey)
+                .modelName(modelName)
+                .temperature(temperature)
+                .timeout(timeout)
+                .maxTokens(maxTokens)
+                .logRequests(logRequests)
+                .logResponses(logResponses);
 
-        String orgId = config.getOrganizationId();
-        if (orgId != null && !orgId.isEmpty()) {
-            builder = builder.organizationId(orgId);
+        if (baseUrl != null && !baseUrl.isEmpty()) {
+            builder.baseUrl(baseUrl);
         }
-
+        if (frequencyPenalty != null) {
+            builder.frequencyPenalty(frequencyPenalty);
+        }
+        if (organizationId != null && !organizationId.isEmpty()) {
+            builder.organizationId(organizationId);
+        }
         return builder.build();
-    }
-
-    //Findings:
-    // the frequency penalty is only supported by OPENAI, following any other provider will not have this feature
-
-    private StreamingChatLanguageModel createAnthropicModel(ModelType modelType, AnthropicConfig config) {
-        log.warn("Using OpenAI-compatible endpoint for Anthropic. Native support coming soon.");
-        return AnthropicStreamingChatModel.builder()
-                .apiKey(config.getApiKey())
-                .modelName(modelType.getModelName())
-                .temperature(config.getTemperature())
-                .timeout(config.getTimeout())
-                .maxTokens(config.getMaxTokens())
-                .logRequests(config.isLogRequests())
-                .logResponses(config.isLogResponses())
-                .build();
-    }
-
-    private StreamingChatLanguageModel createGoogleModel(ModelType modelType, GoogleConfig config) {
-        log.warn("Using OpenAI-compatible endpoint for Google. Native support coming soon.");
-        return OpenAiStreamingChatModel.builder()
-                .apiKey(config.getApiKey())
-                .modelName(modelType.getModelName())
-                .baseUrl(config.getBaseUrl())
-                .temperature(config.getTemperature())
-                .timeout(config.getTimeout())
-                .maxTokens(config.getMaxTokens())
-                .logRequests(config.isLogRequests())
-                .logResponses(config.isLogResponses())
-                .build();
-    }
-
-    private StreamingChatLanguageModel createMistralModel(ModelType modelType, MistralConfig config) {
-        log.warn("Using OpenAI-compatible endpoint for Mistral. Native support coming soon.");
-        return MistralAiStreamingChatModel.builder()
-                .apiKey(config.getApiKey())
-                .modelName(modelType.getModelName())
-                .baseUrl(config.getBaseUrl())
-                .temperature(config.getTemperature())
-                .timeout(config.getTimeout())
-                .maxTokens(config.getMaxTokens())
-                .safePrompt(true)
-                .logRequests(config.isLogRequests())
-                .logResponses(config.isLogResponses())
-                .build();
     }
 }

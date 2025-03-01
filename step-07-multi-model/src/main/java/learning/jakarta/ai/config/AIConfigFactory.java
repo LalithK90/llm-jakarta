@@ -18,12 +18,16 @@ public class AIConfigFactory {
     @Inject
     private MistralConfig mistralConfig;
 
+    @Inject
+    private OlamaConfig olamaConfig;
+
     public AIProviderConfig getConfig(Provider provider) {
         return switch (provider) {
             case OPENAI -> openAIConfig;
             case ANTHROPIC -> anthropicConfig;
             case GOOGLE -> googleConfig;
             case MISTRAL -> mistralConfig;
+            case OLAMA -> olamaConfig;
         };
     }
 }
