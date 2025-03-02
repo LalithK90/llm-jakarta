@@ -1,6 +1,7 @@
 package learning.jakarta.ai;
 
 import learning.jakarta.ai.tools.JakartaEEProjectGeneratorTool;
+import learning.jakarta.ai.tools.JavaCompilerTool;
 import learning.jakarta.ai.tools.WebPageTool;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
@@ -36,7 +37,7 @@ public class LangChainService {
         jakartaEEAgent = AiServices
                 .builder(JakartaEEAgent.class)
                 .streamingChatLanguageModel(chatModel)
-                .tools(new JakartaEEProjectGeneratorTool(), new WebPageTool())
+                .tools(new JakartaEEProjectGeneratorTool(), new WebPageTool(), new JavaCompilerTool())
                 .chatMemory(MessageWindowChatMemory.builder().maxMessages(config.getMaxMemorySize()).build())
                 .build();
     }
