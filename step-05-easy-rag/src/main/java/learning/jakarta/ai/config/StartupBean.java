@@ -3,9 +3,12 @@ package learning.jakarta.ai.config;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.document.parser.apache.tika.ApacheTikaDocumentParser;
+import dev.langchain4j.data.document.splitter.DocumentByWordSplitter;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
+import dev.langchain4j.store.embedding.IngestionResult;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Singleton;
@@ -18,6 +21,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import static dev.langchain4j.data.document.splitter.DocumentSplitters.recursive;
 
 @Slf4j
 @Startup
@@ -51,12 +56,16 @@ public class StartupBean {
         List<Document> documents = FileSystemDocumentLoader.loadDocuments(config.getDocumentsDir(), new ApacheTikaDocumentParser());
         log.info("Total documents parsed: {}", documents.size());
 
-        documents.stream()
-                .filter(document -> !names.contains(document.metadata().getString("file_name")))
-                .forEach(document -> {
-                    TextSegment textSegment = document.toTextSegment();
-                    Embedding content = embeddingModel.embed(textSegment).content();
-                    pgVectorStore.add(content, textSegment);
-                });
+
+        // Ingestion demo with Document, Word, Sentence splitters.
+        var ingestor = EmbeddingStoreIngestor.builder()
+                .embeddingStore(pgVectorStore)
+                .embeddingModel(embeddingModel)
+                .documentSplitter(new DocumentByWordSplitter(50, 5))
+                .build();
+
+        IngestionResult result = ingestor.ingest(documents);
+        log.info("Ingestion result: {}", result.tokenUsage());
+
     }
 }
