@@ -5,7 +5,7 @@
 
     <groupId>learning.jakarta.ai</groupId>
     <artifactId>llm-jakarta</artifactId>
-    <version>1.0.0</version>
+    <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>llm-jakarta</name>
@@ -23,5 +23,6 @@
         <module>step-06-advanced-rag</module>
         <module>step-07-multi-model</module>
         <module>step-08-advanced-tools-and-rag</module>
+        <module>step-09-mcp</module>
     </modules>
 </project>
