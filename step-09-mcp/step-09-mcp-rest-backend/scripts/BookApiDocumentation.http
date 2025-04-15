@@ -1,0 +1,86 @@
+### Variables
+@baseUrl = http://localhost:8080/llm-jakarta/rest
+
+### Get all books
+GET {{baseUrl}}/books
+Accept: application/json
+
+### Get book by ISBN
+GET {{baseUrl}}/books/9780134052502
+Accept: application/json
+
+### Get all categories
+GET {{baseUrl}}/books/categories
+Accept: application/json
+
+### Get books by category
+GET {{baseUrl}}/books/category/java
+Accept: application/json
+
+### Search books
+GET {{baseUrl}}/books/search?query=java
+Accept: application/json
+
+### Create a new book
+POST {{baseUrl}}/books
+Content-Type: application/json
+Accept: application/json
+
+{
+  "isbn": "9781234567897",
+  "title": "Jakarta EE Essentials",
+  "author": "Java Developer",
+  "description": "A comprehensive guide to Jakarta EE",
+  "price": 29.99,
+  "stockQuantity": 50,
+  "category": "Programming",
+  "imageUrl": "/images/jakarta-ee.png"
+}
+
+### Update a book
+PUT {{baseUrl}}/books/9781234567897
+Content-Type: application/json
+Accept: application/json
+
+{
+  "isbn": "9781234567897",
+  "title": "Jakarta EE Essentials - 2nd Edition",
+  "author": "Java Developer",
+  "description": "Updated guide to Jakarta EE",
+  "price": 34.99,
+  "stockQuantity": 75,
+  "category": "Programming",
+  "imageUrl": "/images/jakarta-ee-2nd.png"
+}
+
+### Update book stock
+PATCH {{baseUrl}}/books/9781234567897/stock/100
+Accept: application/json
+
+### Batch create/update books
+POST {{baseUrl}}/books/batch
+Content-Type: application/json
+Accept: application/json
+
+[
+  {
+    "isbn": "9780123456789",
+    "title": "Jakarta REST Programming",
+    "author": "REST Expert",
+    "description": "Learn RESTful web services with Jakarta",
+    "price": 39.99,
+    "stockQuantity": 25,
+    "category": "Programming",
+    "imageUrl": "/images/jakarta-rest.png"
+  },
+  {
+    "isbn": "9780987654321",
+    "title": "Mastering JAX-RS",
+    "author": "Web Developer",
+    "description": "Advanced techniques for JAX-RS applications",
+    "price": 44.99,
+    "stockQuantity": 15,
+    "category": "Programming",
+    "imageUrl": "/images/jaxrs.png"
+  }
+]
