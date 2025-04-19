@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -40,9 +41,13 @@ public class ConfigurationBean {
     }
 
     public List<String> getAllowedModels() {
-        return config.getAllowedModelsList();
+        return config.getAllowedModelsList()
+                .stream()
+                .map(String::strip)
+                .toList();
     }
 
+    //TODO logging isn't working, need to fix it
     public String updateConfiguration() {
         config.setApiKey(apiKey);
         config.setModelName(modelName);

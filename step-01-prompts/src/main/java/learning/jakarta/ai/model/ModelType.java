@@ -5,6 +5,9 @@ import lombok.Getter;
 @Getter
 public enum ModelType {
     GPT_4("gpt-4", "GPT-4"),
+    GPT_4_1("gpt-4.1", "GPT-4.1"),
+    GPT_4_1_MINI("gpt-4.1-mini", "GPT-4.1 Mini"),
+    GPT_4_1_NANO("gpt-4.1-nano", "GPT-4.1 Nano"),
     GPT_4_MINI("gpt-4o-mini", "GPT-4 Omni Mini"),
     GPT_4O("gpt-4o", "GPT-4 Omni"),
     GPT_3_5_TURBO("gpt-3.5-turbo", "GPT-3.5 Turbo");

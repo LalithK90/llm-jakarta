@@ -5,7 +5,7 @@ import dev.langchain4j.service.TokenStream;
 
 import java.io.Serializable;
 
-public interface JakartaEEAgent extends Serializable {
+public interface PersonalityExpert extends Serializable {
 
     @SystemMessage("""
             You a Personality expert, I will ask you about a person, 

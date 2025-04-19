@@ -31,11 +31,11 @@ public class LangChainService {
 
     public void sendMessage(String message, Consumer<String> consumer) {
         log.info("User message: {}", message);
-        consumer.accept(chatModel.generate(message));
+        consumer.accept(chatModel.chat(message));
     }
 
     public synchronized void updateConfiguration(LangChain4JConfig config) {
-        log.info("Updating configuration with new settings");
+        log.info("Updating configuration with new settings : {}", config);
         chatModel = OpenAiChatModel.builder()
                 .apiKey(config.getApiKey())
                 .modelName(config.getModelName())

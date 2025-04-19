@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 @ApplicationScoped
 @NoArgsConstructor
 public class LangChainService {
-    private JakartaEEAgent jakartaEEAgent;
+    private PersonalityExpert personalityExpert;
 
     @Inject
     public LangChainService(ConfigProp config, PgVectorEmbeddingStore embeddingStore) {
@@ -34,8 +34,8 @@ public class LangChainService {
                 .logResponses(config.isLogResponses())
                 .build();
 
-        jakartaEEAgent = AiServices
-                .builder(JakartaEEAgent.class)
+        personalityExpert = AiServices
+                .builder(PersonalityExpert.class)
                 .streamingChatLanguageModel(chatModel)
                 .chatMemory(MessageWindowChatMemory.builder().maxMessages(config.getMaxMemorySize()).build())
                 .contentRetriever(EmbeddingStoreContentRetriever.from(embeddingStore))
@@ -45,7 +45,7 @@ public class LangChainService {
     public void sendMessage(String userId, String message, Consumer<String> consumer) {
         log.info("User {} message: {}", userId, message);
 
-        jakartaEEAgent.chat(message)
+        personalityExpert.chat(message)
                 .onNext(consumer::accept)
                 .onComplete((Response<AiMessage> response) -> consumer.accept("[END]"))
                 .onError((Throwable throwable) -> {
