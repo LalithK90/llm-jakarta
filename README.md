@@ -164,8 +164,16 @@ Replace `<document_dir>` with the path to your documents directory.
 
 We welcome contributions to enhance this chatbot. If you'd like to contribute, feel free to fork the repository, make your changes, and create a pull request.
 
+All documentation and images etc reside in the `assets` directory
+For any deploy automation use the `deploy` directory
+
+dependency management structure and details is documented [here](assets/docs/DEPENDENCY-MANAGEMENT.md)
+
 ---
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+
+
