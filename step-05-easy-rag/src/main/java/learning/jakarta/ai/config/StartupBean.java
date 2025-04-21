@@ -56,7 +56,6 @@ public class StartupBean {
         List<Document> documents = FileSystemDocumentLoader.loadDocuments(config.getDocumentsDir(), new ApacheTikaDocumentParser());
         log.info("Total documents parsed: {}", documents.size());
 
-
         // Ingestion demo with Document, Word, Sentence splitters.
         var ingestor = EmbeddingStoreIngestor.builder()
                 .embeddingStore(pgVectorStore)

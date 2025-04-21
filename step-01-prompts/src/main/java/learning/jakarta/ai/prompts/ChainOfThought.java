@@ -16,4 +16,4 @@ public non-sealed interface ChainOfThought extends Personality {
 }
 
 // Example prompts
-// How do I implement a binary search algorithm in Java?
+// How I implement a binary search algorithm in Java?

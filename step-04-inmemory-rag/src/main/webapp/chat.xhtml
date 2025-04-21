@@ -37,6 +37,27 @@
             const chatContainer = document.getElementById("chat-container");
             chatContainer.classList.toggle("fullscreen");
         }
+
+        // Font size adjustment
+        let currentFontSize = 1.0; // Default font size multiplier
+        const fontSizeStep = 0.1; // Step to increase/decrease font size
+        const minFontSize = 0.7; // Minimum font size multiplier
+        const maxFontSize = 1.5; // Maximum font size multiplier
+
+        function changeFontSize(action) {
+            if (action === 'increase' &amp;&amp; currentFontSize &lt; maxFontSize) {
+                currentFontSize += fontSizeStep;
+            } else if (action === 'decrease' &amp;&amp; currentFontSize &gt; minFontSize) {
+                currentFontSize -= fontSizeStep;
+            }
+
+            // Apply the font size to the chat window and messages
+            document.documentElement.style.setProperty('--font-size-multiplier', currentFontSize);
+
+            // Update the chat window scroll position
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
     </script>
 </h:head>
 <h:body>
@@ -56,6 +77,8 @@
             <img src="#{request.contextPath}/resources/images/jakartaee_logo.jpg" alt="Jakarta EE Logo"
                  class="jakarta-logo"/>
             <h1 class="chat-title">AI Chatbot</h1>
+            <button class="chat-font-decrease" onclick="changeFontSize('decrease')" title="Decrease font size">A-</button>
+            <button class="chat-font-increase" onclick="changeFontSize('increase')" title="Increase font size">A+</button>
             <button class="chat-minimize" onclick="toggleChat()">−</button>
             <button class="chat-fullscreen" onclick="toggleFullScreen()">⤢</button>
         </div>

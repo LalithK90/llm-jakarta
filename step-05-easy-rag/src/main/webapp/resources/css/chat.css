@@ -1,3 +1,8 @@
+/* Font size multiplier variable */
+:root {
+    --font-size-multiplier: 1.0;
+}
+
 /* Main Page Welcome Message */
 .main-page-content {
     text-align: center;
@@ -10,14 +15,14 @@
 }
 
 .main-page-content h1 {
-    font-size: 28px;
+    font-size: calc(28px * var(--font-size-multiplier));
     font-weight: bold;
     color: #1b52a0; /* Jakarta EE blue */
     margin-bottom: 20px;
 }
 
 .main-page-content p {
-    font-size: 16px;
+    font-size: calc(16px * var(--font-size-multiplier));
     line-height: 1.6;
     color: #555;
 }
@@ -75,7 +80,7 @@
     background-color: transparent;
     color: #1b52a0; /* Jakarta EE blue */
     border: none;
-    font-size: 18px;
+    font-size: calc(18px * var(--font-size-multiplier));
     font-weight: bold;
     cursor: pointer;
     padding: 5px;
@@ -94,7 +99,7 @@
     color: #1b52a0; /* Jakarta EE blue for text */
     text-align: center;
     padding: 20px;
-    font-size: 18px;
+    font-size: calc(18px * var(--font-size-multiplier));
     font-weight: bold;
     display: flex;
     flex-direction: column;
@@ -175,7 +180,7 @@
     word-wrap: break-word;
     max-width: 75%;
     display: inline-block;
-    font-size: 14px;
+    font-size: calc(14px * var(--font-size-multiplier));
 }
 
 .message-bubble {
@@ -207,14 +212,14 @@
 .markdown-content {
     font-family: 'Poppins', sans-serif;
     line-height: 1.6;
-    font-size: 14px;
+    font-size: calc(14px * var(--font-size-multiplier));
     color: #333;
     overflow-wrap: break-word; /* Prevent long text from breaking layout */
 }
 
 /* Markdown-specific styles */
 .markdown-content h1, .markdown-content h2, .markdown-content h3 {
-    font-size: 16px;
+    font-size: calc(16px * var(--font-size-multiplier));
     font-weight: bold;
     margin: 10px 0 5px;
 }
@@ -247,7 +252,7 @@
     border-radius: 5px;
     overflow-x: auto;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 14px;
+    font-size: calc(14px * var(--font-size-multiplier));
 }
 
 /* Prevent excessive Markdown block expansion */
@@ -273,7 +278,7 @@
     background-color: transparent;
     color: #1b52a0; /* Jakarta EE blue */
     border: none;
-    font-size: 18px;
+    font-size: calc(18px * var(--font-size-multiplier));
     font-weight: bold;
     cursor: pointer;
     padding: 5px;
@@ -311,7 +316,7 @@
 .chat-input {
     flex-grow: 1;
     padding: 10px;
-    font-size: 16px;
+    font-size: calc(16px * var(--font-size-multiplier));
     border: 1px solid #ddd;
     border-radius: 20px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -326,7 +331,7 @@
 /* Send button styles */
 .chat-send-button {
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: calc(16px * var(--font-size-multiplier));
     font-weight: bold;
     color: #fff;
     background-color: #1b52a0; /* Jakarta EE blue */
@@ -388,7 +393,7 @@
     border-radius: 20px;
     max-width: 75%;
     word-wrap: break-word;
-    font-size: 14px;
+    font-size: calc(14px * var(--font-size-multiplier));
 }
 
 .message.user p {

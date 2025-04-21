@@ -20,23 +20,23 @@ import java.util.List;
 @Startup
 public class ApplicationStartupBean {
 
-    private InMemoryEmbeddingStore<TextSegment> embeddingStore;
+	private InMemoryEmbeddingStore<TextSegment> embeddingStore;
 
-    @Inject
-    LangChain4JConfig config;
+	@Inject
+	private LangChain4JConfig config;
 
-    @PostConstruct
-    public void init() {
-        log.info("Application started successfully.");
-        List<Document> documents = FileSystemDocumentLoader.loadDocuments(config.getDocumentsDir());
-        embeddingStore = new InMemoryEmbeddingStore<>();
-        EmbeddingStoreIngestor.ingest(documents, embeddingStore);
-    }
+	@PostConstruct
+	public void init() {
+		log.info("Application started successfully.");
+		List<Document> documents = FileSystemDocumentLoader.loadDocuments(config.getDocumentsDir());
+		embeddingStore = new InMemoryEmbeddingStore<>();
+		EmbeddingStoreIngestor.ingest(documents, embeddingStore);
+	}
 
 
-    @Produces
-    @ApplicationScoped
-    public InMemoryEmbeddingStore<TextSegment> produceEmbeddingStore() {
-        return embeddingStore;
-    }
+	@Produces
+	@ApplicationScoped
+	public InMemoryEmbeddingStore<TextSegment> produceEmbeddingStore() {
+		return embeddingStore;
+	}
 }

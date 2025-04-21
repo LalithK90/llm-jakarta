@@ -6,6 +6,7 @@
     --bg-color: #fdfdfd;
     --shadow-color: rgba(0, 0, 0, 0.2);
     --transition-speed: 0.3s;
+    --font-size-multiplier: 1.0;
 }
 
 /* Animated Welcome Section */
@@ -23,7 +24,7 @@
 }
 
 .main-page-content h1 {
-    font-size: 36px;
+    font-size: calc(36px * var(--font-size-multiplier));
     font-weight: bold;
     color: var(--primary-color);
     margin-bottom: 30px;
@@ -44,7 +45,7 @@
 }
 
 .main-page-content p {
-    font-size: 18px;
+    font-size: calc(18px * var(--font-size-multiplier));
     line-height: 1.8;
     color: #555;
     margin: 20px 0;
@@ -198,7 +199,7 @@
     padding: 12px 16px;
     border-radius: 15px;
     line-height: 1.5;
-    font-size: 14px;
+    font-size: calc(14px * var(--font-size-multiplier));
     animation: fadeIn 0.3s ease-out;
 }
 
@@ -241,7 +242,7 @@
     box-sizing: border-box;
     animation: messageAppear 0.3s ease-out;
     position: relative;
-    font-size: 15px;
+    font-size: calc(15px * var(--font-size-multiplier));
     line-height: 1.4;
 }
 
@@ -306,7 +307,7 @@
 }
 
 .chat-title {
-    font-size: 16px;
+    font-size: calc(16px * var(--font-size-multiplier));
     font-weight: 600;
     margin: 0 0 8px;
     color: white;
@@ -500,7 +501,7 @@
 
 .chat-title {
     margin: 0;
-    font-size: 16px;
+    font-size: calc(16px * var(--font-size-multiplier));
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -534,7 +535,7 @@
 }
 
 .chat-controls button i {
-    font-size: 16px;
+    font-size: calc(16px * var(--font-size-multiplier));
     transition: all 0.2s ease;
 }
 
@@ -550,12 +551,12 @@
 }
 
 .chat-minimize i {
-    font-size: 20px;
+    font-size: calc(20px * var(--font-size-multiplier));
     line-height: 1;
 }
 
 .chat-fullscreen i {
-    font-size: 18px;
+    font-size: calc(18px * var(--font-size-multiplier));
 }
 
 .chat-minimize:hover i {
@@ -622,7 +623,7 @@
     padding: 10px 15px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 20px;
-    font-size: 14px;
+    font-size: calc(14px * var(--font-size-multiplier));
     background: #f5f5f5;
     transition: all 0.3s ease;
 }
@@ -659,7 +660,7 @@
 }
 
 .chat-send-button i {
-    font-size: 16px;
+    font-size: calc(16px * var(--font-size-multiplier));
     transition: transform 0.2s ease;
 }
 
@@ -1007,7 +1008,7 @@
 
 .markdown-content pre code {
     font-family: 'Fira Code', monospace;
-    font-size: 13px;
+    font-size: calc(13px * var(--font-size-multiplier));
     line-height: 1.6;
     color: #f8f8f2;
 }
@@ -1017,7 +1018,7 @@
     background: rgba(0, 0, 0, 0.1);
     padding: 2px 6px;
     border-radius: 4px;
-    font-size: 13px;
+    font-size: calc(13px * var(--font-size-multiplier));
     color: var(--primary-color);
 }
 

@@ -54,6 +54,9 @@ function cleanupWebSocket() {
         input.disabled = false;
         sendButton.disabled = false;
         sendButton.style.opacity = '1';
+
+        // Set focus back to input field
+        input.focus();
     }
 
     hideTypingIndicator();

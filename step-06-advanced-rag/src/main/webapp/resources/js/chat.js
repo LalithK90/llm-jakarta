@@ -53,6 +53,12 @@ function connect() {
             if (data === "[END]") {
                 finalizeStreamingMessage();
                 hideTypingIndicator();
+
+                // Set focus back to input field after receiving a response
+                const input = document.getElementById("message-input");
+                if (input) {
+                    input.focus();
+                }
             } else {
                 if (!currentStreamingMessage) {
                     createNewBotBubble();
