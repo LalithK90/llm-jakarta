@@ -6,6 +6,7 @@
     --bg-color: #fdfdfd;
     --shadow-color: rgba(0, 0, 0, 0.2);
     --transition-speed: 0.3s;
+    --font-size-multiplier: 1.0;
 }
 
 /* Animated Welcome Section */
@@ -518,7 +519,7 @@
     max-width: 80%;
     box-sizing: border-box;
     animation: messageAppear 0.3s ease-out;
-    font-size: 15px;
+    font-size: calc(15px * var(--font-size-multiplier));
     line-height: 1.4;
 }
 
@@ -567,7 +568,7 @@
 /* Markdown Content in Messages */
 .markdown-content {
     width: 100%;
-    font-size: 15px;
+    font-size: calc(15px * var(--font-size-multiplier));
     line-height: 1.5;
 }
 
@@ -596,7 +597,7 @@
     border-radius: 8px;
     overflow-x: auto;
     font-family: 'Fira Code', monospace;
-    font-size: 13px;
+    font-size: calc(13px * var(--font-size-multiplier));
     line-height: 1.6;
     margin: 12px 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -764,7 +765,7 @@
     padding: 12px 20px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 20px;
-    font-size: 15px;
+    font-size: calc(15px * var(--font-size-multiplier));
     line-height: 1.4;
     transition: all var(--transition-speed);
     background-color: #f0f2f5;
@@ -799,7 +800,7 @@
 }
 
 .chat-send-button i {
-    font-size: 16px;
+    font-size: calc(16px * var(--font-size-multiplier));
     transition: transform 0.2s ease;
 }
 
@@ -1139,14 +1140,14 @@
 
 .chat-header .chat-title {
     color: white;
-    font-size: 1.2em;
+    font-size: calc(1.2em * var(--font-size-multiplier));
     margin: 0;
     font-weight: 600;
 }
 
 .chat-header .chat-subtitle {
     color: rgba(255, 255, 255, 0.9);
-    font-size: 0.85em;
+    font-size: calc(0.85em * var(--font-size-multiplier));
     margin: 0;
 }
 
@@ -1154,6 +1155,36 @@
     display: flex;
     gap: 10px;
     align-items: center;
+}
+
+.font-size-increase, .font-size-decrease {
+    background: transparent;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.font-size-increase:hover, .font-size-decrease:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.font-size-increase i, .font-size-decrease i {
+    font-size: 10px;
+    transition: transform 0.2s ease;
+}
+
+.font-size-increase i:first-child, .font-size-decrease i:first-child {
+    font-size: 14px;
+    margin-right: -4px;
 }
 
 .chat-controls button,

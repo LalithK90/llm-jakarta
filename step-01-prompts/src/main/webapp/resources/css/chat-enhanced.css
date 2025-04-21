@@ -6,6 +6,7 @@
     --bg-color: #fdfdfd;
     --shadow-color: rgba(0, 0, 0, 0.2);
     --transition-speed: 0.3s;
+    --font-size-multiplier: 1.0;
 }
 
 /* Animated Welcome Section */
@@ -198,7 +199,7 @@
     padding: 12px 16px;
     border-radius: 15px;
     line-height: 1.5;
-    font-size: 14px;
+    font-size: calc(14px * var(--font-size-multiplier));
     animation: fadeIn 0.3s ease-out;
 }
 
@@ -241,7 +242,7 @@
     box-sizing: border-box;
     animation: messageAppear 0.3s ease-out;
     position: relative;
-    font-size: 15px;
+    font-size: calc(15px * var(--font-size-multiplier));
     line-height: 1.4;
 }
 
@@ -373,6 +374,20 @@
 }
 
 .chat-fullscreen:hover i {
+    transform: scale(1.2);
+}
+
+.font-size-increase i, .font-size-decrease i {
+    font-size: 10px;
+    transition: transform 0.2s ease;
+}
+
+.font-size-increase i:first-child, .font-size-decrease i:first-child {
+    font-size: 14px;
+    margin-right: -4px;
+}
+
+.font-size-increase:hover i, .font-size-decrease:hover i {
     transform: scale(1.2);
 }
 
@@ -605,7 +620,7 @@
     padding: 10px 15px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 20px;
-    font-size: 14px;
+    font-size: calc(14px * var(--font-size-multiplier));
     background: #f5f5f5;
     transition: all 0.3s ease;
 }
@@ -851,7 +866,7 @@
     }
 
     .chat-input {
-        font-size: 14px;
+        font-size: calc(14px * var(--font-size-multiplier));
         padding: 10px 16px;
     }
 

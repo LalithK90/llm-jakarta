@@ -40,6 +40,20 @@ function getUserId() {
     return userId;
 }
 
+function cleanupWebSocket() {
+    // Re-enable controls
+    const input = document.getElementById("message-input");
+    const sendButton = document.querySelector('.chat-send-button');
+    if (input && sendButton) {
+        input.disabled = false;
+        sendButton.disabled = false;
+        sendButton.style.opacity = '1';
+
+        // Set focus back to input field
+        input.focus();
+    }
+}
+
 function connect() {
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const host = window.location.host;
@@ -58,6 +72,7 @@ function connect() {
 
             if (data === "[END]") {
                 finalizeStreamingMessage();
+                cleanupWebSocket();
             } else {
                 if (!currentStreamingMessage) {
                     createNewBotBubble();
@@ -498,4 +513,3 @@ function toggleSystemPrompt() {
         systemPrompt.style.display = "none";
     }
 }
-

@@ -44,6 +44,26 @@
             }, 500);
         });
 
+        // Font size adjustment
+        let currentFontSize = 1.0; // Default font size multiplier
+        const fontSizeStep = 0.1; // Step to increase/decrease font size
+        const minFontSize = 0.7; // Minimum font size multiplier
+        const maxFontSize = 1.5; // Maximum font size multiplier
+
+        function changeFontSize(action) {
+            if (action === 'increase' &amp;&amp; currentFontSize &lt; maxFontSize) {
+                currentFontSize += fontSizeStep;
+            } else if (action === 'decrease' &amp;&amp; currentFontSize &gt; minFontSize) {
+                currentFontSize -= fontSizeStep;
+            }
+
+            // Apply the font size to the chat window and messages
+            document.documentElement.style.setProperty('--font-size-multiplier', currentFontSize);
+
+            // Update the chat window scroll position
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
     </script>
 </h:head>
 <h:body>
@@ -79,6 +99,12 @@
                 </div>
             </div>
             <div class="chat-controls">
+                <button class="font-size-decrease" onclick="changeFontSize('decrease')" title="Decrease font size">
+                    <i class="fas fa-font"></i><i class="fas fa-minus"></i>
+                </button>
+                <button class="font-size-increase" onclick="changeFontSize('increase')" title="Increase font size">
+                    <i class="fas fa-font"></i><i class="fas fa-plus"></i>
+                </button>
                 <button class="chat-minimize" onclick="toggleChat()" title="Minimize chat">
                     <i class="fas fa-minus"></i>
                 </button>
