@@ -8,7 +8,6 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 // Removed unused AllMiniLmL6V2EmbeddingModel import
 import dev.langchain4j.model.openai.OpenAiChatModel;
 // Removed unused OpenAiStreamingChatModel import
-import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import dev.langchain4j.rag.DefaultRetrievalAugmentor;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
@@ -42,6 +41,35 @@ public class LangChainService {
                             BookStoreService bookStoreService,
                             EmbeddingModel embeddingModel,
                             EmbeddingStore<TextSegment> embeddingStore) {
+
+        configureChatService(config, bookStoreService, embeddingModel, embeddingStore);
+
+        configureGaurdrailModel(config);
+    }
+
+    private void configureGaurdrailModel(LangChain4JConfig config) {
+        try {
+            var injectionDetectionModel = OpenAiChatModel.builder()
+                    .apiKey(config.getGoogleApiKey())
+                    .modelName(config.getGoogleChatModelName())
+                    .temperature(2.0)
+                    .timeout(config.getTimeout())
+                    .maxTokens(config.getMaxTokens())
+                    .logRequests(config.isLogRequests())
+                    .logResponses(config.isLogResponses())
+                    .baseUrl(config.getGoogleBaseUrl())
+                    .build();
+
+            promptInjectionDetectionService = AiServices.builder(PromptInjectionDetectionService.class)
+                    .chatLanguageModel(injectionDetectionModel)
+                    .build();
+        } catch (Exception e) {
+            log.error("Failed to initialize PromptInjectionDetectionService. Injection checks will be skipped.", e);
+            promptInjectionDetectionService = null; // Ensure it's null if init fails
+        }
+    }
+
+    private void configureChatService(LangChain4JConfig config, BookStoreService bookStoreService, EmbeddingModel embeddingModel, EmbeddingStore<TextSegment> embeddingStore) {
         var chatModel = OpenAiChatModel.builder()
                 .apiKey(config.getApiKey())
                 .modelName(config.getModelName())
@@ -79,39 +107,16 @@ public class LangChainService {
                 .chatMemoryProvider(chatMemoryProvider)
                 .retrievalAugmentor(retrievalAugmentor)
                 .build();
-
-
-        try {
-
-            var injectionDetectionModel = OpenAiChatModel.builder()
-                    .apiKey(config.getGoogleApiKey())
-                    .modelName(config.getGoogleChatModelName())
-                    .temperature(2.0)
-                    .timeout(config.getTimeout())
-                    .maxTokens(config.getMaxTokens())
-                    .logRequests(config.isLogRequests())
-                    .logResponses(config.isLogResponses())
-                    .baseUrl(config.getGoogleBaseUrl())
-                    .build();
-
-            promptInjectionDetectionService = AiServices.builder(PromptInjectionDetectionService.class)
-                    .chatLanguageModel(injectionDetectionModel)
-                    .build();
-            log.info("PromptInjectionDetectionService initialized successfully.");
-        } catch (Exception e) {
-            log.error("Failed to initialize PromptInjectionDetectionService. Injection checks will be skipped.", e);
-            promptInjectionDetectionService = null; // Ensure it's null if init fails
-        }
     }
 
     public void sendMessage(String userId, String message, Consumer<String> consumer) {
         log.info("User {} message: '{}'", userId, message);
 
-        boolean proceed = checkPromptInjection(userId, message, consumer);
+        boolean proceed = checkPromptInjection(message, consumer);
 
         if (proceed) {
             try {
-                String messageResponse = bookStoreChatService.chat(userId, message);
+                String messageResponse = bookStoreChatService.chat(message, userId);
                 consumer.accept(messageResponse);
             } catch (Exception e) {
                 log.error("Error during main chat processing for user {}: {}", userId, message, e);
@@ -122,9 +127,10 @@ public class LangChainService {
         consumer.accept("[END]");
     }
 
-    private boolean checkPromptInjection(String userId, String message, Consumer<String> consumer) {
+
+    private boolean checkPromptInjection(String message, Consumer<String> consumer) {
         if (promptInjectionDetectionService == null) {
-            log.warn("PromptInjectionDetectionService is unavailable. Skipping check for user {}.", userId);
+            log.warn("PromptInjectionDetectionService is unavailable. Skipping check.");
             return true;
         }
 
@@ -133,17 +139,21 @@ public class LangChainService {
             log.info("Prompt injection score {} (Threshold: {})", injectionScore, INJECTION_THRESHOLD);
 
             if (injectionScore > INJECTION_THRESHOLD) {
-                log.warn("User {} message: '{}' is DETECTED as a prompt injection (Score: {})", userId, message, injectionScore);
+                log.warn("Message: '{}' is DETECTED as a prompt injection (Score: {})", message, injectionScore);
                 consumer.accept("Sorry, I am unable to process your request at the moment. It's not something I'm allowed to do.");
                 return false; // Block further processing
             } else {
-                log.info("User {} message: '{}' is NOT detected as a prompt injection (Score: {})", userId, message, injectionScore);
+                log.info("Message: '{}' is NOT detected as a prompt injection (Score: {})", message, injectionScore);
                 return true; // Safe to proceed
             }
         } catch (Exception e) {
-            log.error("Error during prompt injection detection for user {}. Allowing processing with caution.", userId, e);
+            log.error("Error during prompt injection detection. Allowing processing with caution.", e);
             return true;
         }
     }
-
+    // purple llama
+    // code shield
+    // List of words are included in the response, either remove them or this question is not ethical
+    // input
+    // output -> chain of gaurds
 }

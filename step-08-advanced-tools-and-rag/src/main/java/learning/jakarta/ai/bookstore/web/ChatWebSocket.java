@@ -7,6 +7,7 @@ import learning.jakarta.ai.bookstore.service.LangChainService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,12 +16,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @ServerEndpoint("/chat")
 public class ChatWebSocket {
     private static final Map<String, Session> activeSessions = new ConcurrentHashMap<>();
+    private static final long CUSTOM_IDLE_TIMEOUT_MS= Duration.ofMinutes(5).toMillis();
 
     @Inject
     private LangChainService langChainService;
 
     @OnOpen
     public void onOpen(Session session) {
+        session.setMaxIdleTimeout(CUSTOM_IDLE_TIMEOUT_MS);
+
         Optional<String> userIdOpt = getQueryParam(session, "userId");
 
         if (userIdOpt.isEmpty()) {
@@ -38,7 +42,7 @@ public class ChatWebSocket {
         activeSessions.put(userId, session);
         session.getUserProperties().put("userId", userId);
 
-        langChainService.sendMessage("Hey there! How can I help you today?", userId, next -> {
+        langChainService.sendMessage( userId,"Hey there! How can I help you today?",next -> {
             try {
                 session.getBasicRemote().sendText(next);
                 session.getBasicRemote().sendText("[END]");
@@ -51,7 +55,7 @@ public class ChatWebSocket {
     @OnMessage
     public void onMessage(String message, Session session) {
         String userId = (String) session.getUserProperties().get("userId");
-        langChainService.sendMessage(message, userId, next -> {
+        langChainService.sendMessage(userId, message, next -> {
             try {
                 session.getBasicRemote().sendText(next);
             } catch (IOException e) {

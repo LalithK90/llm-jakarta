@@ -42,8 +42,7 @@ public class BookStoreRagIngestor {
 		List<Document> documents = new ArrayList<>();
 
 		documents.addAll(loadDocuments(docsFolder.getPath(), new TextDocumentParser()));
-		documents.addAll(createBookDocuments());
-
+		//documents.addAll(createBookDocuments());
 		return documents;
 	}
 
