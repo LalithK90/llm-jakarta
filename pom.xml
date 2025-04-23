@@ -44,9 +44,6 @@
         <!-- WildFly -->
         <wildfly.version>35.0.1.Final</wildfly.version>
 
-        <!-- Quarkus -->
-        <quarkus.platform.version>3.21.2</quarkus.platform.version>
-
         <!-- LangChain4j -->
         <langchain4j.version>1.0.0-beta3</langchain4j.version>
 
@@ -183,15 +180,6 @@
                 <artifactId>rest-assured</artifactId>
                 <version>${rest-assured.version}</version>
                 <scope>test</scope>
-            </dependency>
-
-            <!-- Quarkus BOM -->
-            <dependency>
-                <groupId>io.quarkus.platform</groupId>
-                <artifactId>quarkus-bom</artifactId>
-                <version>${quarkus.platform.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
